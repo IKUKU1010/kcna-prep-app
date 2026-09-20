@@ -1,0 +1,59 @@
+{% extends "base.html" %}
+{% block title %}Bundles — KCNA Exam Prep{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Choose a practice exam</h1>
+  <p>{{ bundles|length }} independent bundles, 60 questions each, 70 minutes on the clock, weighted across all five KCNA domains. Every attempt shuffles question and answer order so repeat runs stay honest.</p>
+</div>
+
+<div class="stat-strip">
+  <div class="stat">
+    <span class="num mono">{{ bundles|length }}</span>
+    <span class="label">Bundles available</span>
+  </div>
+  <div class="stat">
+    <span class="num mono">60</span>
+    <span class="label">Questions per bundle</span>
+  </div>
+  <div class="stat">
+    <span class="num mono">70</span>
+    <span class="label">Minutes per attempt</span>
+  </div>
+  <div class="stat">
+    <span class="num mono">850</span>
+    <span class="label">Points needed to pass (of 1000)</span>
+  </div>
+</div>
+
+<div class="bundle-grid">
+  {% for b in bundles %}
+  <div class="bundle-card">
+    <span class="index mono">{{ '%02d'|format(loop.index) }}</span>
+    <div>
+      <h2>{{ b.name }}</h2>
+      <p class="desc">{{ b.description }}</p>
+    </div>
+    <div class="bundle-meta">
+      <span>{{ b.num_questions }} questions</span>
+      <span>&middot;</span>
+      <span>{{ b.duration_minutes }} min</span>
+    </div>
+    <div class="bundle-status">
+      {% if b.stats.passed %}
+        <span class="chip chip-pass">Passed &middot; best {{ b.stats.best_score }}</span>
+      {% elif b.stats.attempts > 0 %}
+        <span class="chip chip-fail">Best {{ b.stats.best_score }}/1000</span>
+      {% else %}
+        <span class="chip chip-neutral">Not attempted</span>
+      {% endif %}
+      {% if b.stats.attempts > 0 %}
+        <span class="best">{{ b.stats.attempts }} attempt{{ 's' if b.stats.attempts != 1 else '' }}</span>
+      {% endif %}
+    </div>
+    <a class="btn btn-primary btn-block" href="{{ url_for('start_exam', bundle_id=b.id) }}">
+      {{ 'Retake exam' if b.stats.attempts > 0 else 'Start exam' }}
+    </a>
+  </div>
+  {% endfor %}
+</div>
+{% endblock %}

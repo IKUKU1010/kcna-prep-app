@@ -1,0 +1,46 @@
+{% extends "base.html" %}
+{% block title %}History — KCNA Exam Prep{% endblock %}
+{% block content %}
+<div class="page-head">
+  <h1>Attempt history</h1>
+  <p>Every completed exam attempt, most recent first.</p>
+</div>
+
+{% if history %}
+<table class="history-table">
+  <thead>
+    <tr>
+      <th>Bundle</th>
+      <th>Date</th>
+      <th>Score</th>
+      <th>Result</th>
+      <th>Time taken</th>
+      <th></th>
+    </tr>
+  </thead>
+  <tbody>
+    {% for h in history %}
+    <tr>
+      <td>{{ h.bundle_name }}</td>
+      <td>{{ h.submitted_at[:16].replace('T', ' ') }}</td>
+      <td class="score">{{ h.score }}/1000</td>
+      <td>
+        {% if h.passed %}
+          <span class="chip chip-pass">Passed</span>
+        {% else %}
+          <span class="chip chip-fail">Not passed</span>
+        {% endif %}
+      </td>
+      <td class="mono">{{ (h.time_taken_seconds // 60) }}:{{ '%02d'|format(h.time_taken_seconds % 60) }}</td>
+      <td><a class="btn btn-secondary" href="{{ url_for('result_page', attempt_id=h.id) }}">View</a></td>
+    </tr>
+    {% endfor %}
+  </tbody>
+</table>
+{% else %}
+<div class="empty-state">
+  <p>No attempts yet. Head to the bundles page to start your first practice exam.</p>
+  <a class="btn btn-primary" href="{{ url_for('dashboard') }}">Browse bundles</a>
+</div>
+{% endif %}
+{% endblock %}

@@ -1,0 +1,52 @@
+{% extends "base.html" %}
+{% block title %}{{ bundle.name }} — KCNA Exam Prep{% endblock %}
+{% block content %}
+<div class="exam-shell" id="exam-root"
+     data-attempt-id="{{ attempt_id }}"
+     data-duration-minutes="{{ duration_minutes }}">
+
+  <div class="exam-header">
+    <div class="title">
+      {{ bundle.name }}
+      <span class="sub" id="progress-label">Question 1 of {{ questions|length }}</span>
+    </div>
+    <div class="progress-track"><div class="progress-fill" id="progress-fill" style="width: 0%"></div></div>
+    <div class="timer mono" id="timer">--:--</div>
+  </div>
+
+  <div class="question-panel">
+    <div id="question-body"></div>
+    <div class="exam-nav">
+      <button class="btn btn-secondary" id="btn-prev">Previous</button>
+      <span class="spacer"></span>
+      <button class="btn btn-secondary" id="btn-next">Next</button>
+      <button class="btn btn-primary" id="btn-submit" style="display:none;">Submit exam</button>
+    </div>
+  </div>
+
+  <aside class="sidebar-panel">
+    <h3>Question navigator</h3>
+    <div class="qgrid" id="qgrid"></div>
+    <div class="legend">
+      <div><span class="dot answered"></span>Answered</div>
+      <div><span class="dot unanswered"></span>Not answered</div>
+    </div>
+    <p class="submit-warning">You can jump between questions freely. Submitting ends the attempt and scores it immediately.</p>
+    <button class="btn btn-primary btn-block" id="btn-submit-side">Submit exam</button>
+  </aside>
+</div>
+
+<div class="modal-overlay" id="submit-modal">
+  <div class="modal-box">
+    <h3 id="modal-title">Submit this exam?</h3>
+    <p id="modal-body">You've answered all questions. Once submitted you can't change your answers.</p>
+    <div class="modal-actions">
+      <button class="btn btn-secondary" id="modal-cancel">Keep reviewing</button>
+      <button class="btn btn-primary" id="modal-confirm">Submit now</button>
+    </div>
+  </div>
+</div>
+
+<script id="questions-data" type="application/json">{{ questions | tojson }}</script>
+<script src="{{ url_for('static', filename='js/exam.js') }}"></script>
+{% endblock %}

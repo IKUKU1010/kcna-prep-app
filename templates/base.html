@@ -1,0 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>{% block title %}KCNA Exam Prep{% endblock %}</title>
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:wght@400;500;600;700&family=IBM+Plex+Sans:wght@400;500;600;700&display=swap" rel="stylesheet">
+<link rel="stylesheet" href="{{ url_for('static', filename='css/style.css') }}">
+{% block head %}{% endblock %}
+</head>
+<body>
+<header class="topbar">
+  <a class="brand" href="{{ url_for('dashboard') }}">
+    <span class="brand-mark" aria-hidden="true">
+      <svg viewBox="0 0 32 32" width="26" height="26">
+        <polygon points="16,3 28,9.5 28,22.5 16,29 4,22.5 4,9.5" fill="none" stroke="currentColor" stroke-width="2"/>
+        <circle cx="16" cy="16" r="4.5" fill="currentColor"/>
+      </svg>
+    </span>
+    <span class="brand-text">KCNA<span class="brand-sub">exam prep</span></span>
+  </a>
+  <nav class="topnav">
+    <a href="{{ url_for('dashboard') }}" class="{{ 'active' if request.path == '/' else '' }}">Bundles</a>
+    <a href="{{ url_for('history_page') }}" class="{{ 'active' if request.path == '/history' else '' }}">History</a>
+  </nav>
+</header>
+<main>
+  {% block content %}{% endblock %}
+</main>
+<footer class="sitefooter">
+  <span>KCNA Exam Prep &mdash; unofficial practice tool. Pass mark 850/1000.</span>
+</footer>
+</body>
+</html>

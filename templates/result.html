@@ -1,0 +1,104 @@
+{% extends "base.html" %}
+{% block title %}Result — {{ bundle.name }}{% endblock %}
+{% block content %}
+
+<div class="result-banner {{ 'pass' if attempt.passed else 'fail' }}">
+  <div class="result-score mono">{{ attempt.score }}<span class="of">/1000</span></div>
+  <div class="result-info">
+    <h2>{{ 'You passed' if attempt.passed else 'Not a pass yet' }}</h2>
+    <p>
+      {{ attempt.correct_count }} of {{ attempt.total_questions }} correct on {{ bundle.name }}.
+      Pass mark is 850/1000.
+    </p>
+  </div>
+</div>
+
+<div class="result-meta">
+  <div class="stat">
+    <span class="num mono">{{ attempt.correct_count }}/{{ attempt.total_questions }}</span>
+    <span class="label">Questions correct</span>
+  </div>
+  <div class="stat">
+    <span class="num mono">{{ (attempt.time_taken_seconds // 60) }}:{{ '%02d'|format(attempt.time_taken_seconds % 60) }}</span>
+    <span class="label">Time taken</span>
+  </div>
+  <div class="stat">
+    <span class="num mono">{{ '%.0f'|format((attempt.correct_count / attempt.total_questions) * 100) }}%</span>
+    <span class="label">Accuracy</span>
+  </div>
+</div>
+
+<div class="domain-breakdown">
+  <h3>Score by domain</h3>
+  {% for domain, d in domain_breakdown.items() %}
+  <div class="domain-row">
+    <span class="dname">{{ domain }}</span>
+    <div class="domain-bar"><div class="domain-bar-fill" style="width: {{ (d.correct / d.total * 100) if d.total else 0 }}%"></div></div>
+    <span class="dscore mono">{{ d.correct }}/{{ d.total }}</span>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="filter-bar">
+  <button class="active" data-filter="all">All ({{ answers|length }})</button>
+  <button data-filter="wrong">Incorrect ({{ answers|selectattr('is_correct', 'equalto', false)|list|length }})</button>
+  <button data-filter="right">Correct ({{ answers|selectattr('is_correct', 'equalto', true)|list|length }})</button>
+</div>
+
+<div class="review-list" id="review-list">
+  {% for a in answers %}
+  <div class="review-item {{ 'right' if a.is_correct else 'wrong' }}" data-status="{{ 'right' if a.is_correct else 'wrong' }}">
+    <div class="rtop">
+      <span class="rnum">Question {{ loop.index }} &middot; {{ a.domain }}</span>
+      {% if a.is_correct %}
+        <span class="chip chip-pass">Correct</span>
+      {% else %}
+        <span class="chip chip-fail">Incorrect</span>
+      {% endif %}
+    </div>
+    <h4>{{ a.question }}</h4>
+    <div class="review-options">
+      {% for key, text in a.options.items() %}
+        {% set cls = '' %}
+        {% if key == a.correct %}
+          {% set cls = 'correct-answer' %}
+        {% elif key == a.user_choice and not a.is_correct %}
+          {% set cls = 'wrong-answer' %}
+        {% endif %}
+        <div class="review-option {{ cls }}">
+          <span class="letter">{{ key }}</span>
+          <span>{{ text }}</span>
+          {% if key == a.correct %}<span style="margin-left:auto; color: var(--green); font-size: 0.8rem;">Correct answer</span>{% endif %}
+          {% if key == a.user_choice and key != a.correct %}<span style="margin-left:auto; color: var(--red); font-size: 0.8rem;">Your answer</span>{% endif %}
+        </div>
+      {% endfor %}
+      {% if not a.user_choice %}
+        <div class="review-option">
+          <span class="letter">&mdash;</span>
+          <span style="color: var(--ink-faint);">You left this question unanswered</span>
+        </div>
+      {% endif %}
+    </div>
+    <div class="review-explain"><strong>Why:</strong> {{ a.explanation }}</div>
+  </div>
+  {% endfor %}
+</div>
+
+<div class="result-actions">
+  <a class="btn btn-primary" href="{{ url_for('start_exam', bundle_id=bundle.id) }}">Retake this bundle</a>
+  <a class="btn btn-secondary" href="{{ url_for('dashboard') }}">Back to bundles</a>
+</div>
+
+<script>
+document.querySelectorAll('.filter-bar button').forEach(btn => {
+  btn.addEventListener('click', () => {
+    document.querySelectorAll('.filter-bar button').forEach(b => b.classList.remove('active'));
+    btn.classList.add('active');
+    const filter = btn.dataset.filter;
+    document.querySelectorAll('#review-list .review-item').forEach(item => {
+      item.style.display = (filter === 'all' || item.dataset.status === filter) ? '' : 'none';
+    });
+  });
+});
+</script>
+{% endblock %}
