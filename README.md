@@ -88,7 +88,16 @@ foreground — closing the terminal stops the app.
 Use the included helper scripts:
 
 ```bash
+cd ~/kcna-prep-app
+source venv/bin/activate
+pip install -r requirements.txt
 ./start.sh   # starts the app in the background, safe to close your terminal
+
+Access Application on
+
+<SERVER_IP>:5000
+
+
 ./stop.sh    # stops it
 ```
 
