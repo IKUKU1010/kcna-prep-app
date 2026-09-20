@@ -135,24 +135,6 @@ python build_bundles.py
   answer, your answer, and the original explanation for every question.
 - **History** (`/history`) — every completed attempt across all bundles.
 
-## Project structure
-
-```
-kcna_app/
-  app.py              Flask routes (pages + JSON API)
-  database.py         SQLite schema and data access helpers
-  build_bundles.py    Builds the 12 weighted bundles from the question bank
-  data/
-    questions_bank.json  758 questions (question, options, correct answer,
-                          explanation, domain, competency)
-  templates/           Jinja2 HTML templates
-  static/
-    css/style.css      Design system
-    js/exam.js          Timer, navigation, and submission logic
-  start.sh / stop.sh   Run the app detached in the background
-  kcna.db              SQLite database (created on first run)
-```
-
 ## Notes
 
 - Passing score of 850/1000 corresponds exactly to 51/60 correct answers.
