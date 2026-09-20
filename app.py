@@ -7,7 +7,8 @@ Native Associate (KCNA) certification exam.
 Run with:
     python app.py
 
-Then open http://127.0.0.1:5000 in your browser.
+Then open http://127.0.0.1:8000 in your browser (override with the PORT
+environment variable, e.g. PORT=5050 python app.py).
 """
 import os
 import random
@@ -211,4 +212,5 @@ def api_bundles():
 
 if __name__ == "__main__":
     ensure_seeded()
-    app.run(debug=True, host="0.0.0.0", port=5000)
+    port = int(os.environ.get("PORT", 8000))
+    app.run(debug=True, host="0.0.0.0", port=port)
